@@ -204,8 +204,7 @@ function startGen() {
   setProgress(10);
   showStatus('Video generating... 60-120 seconds', 'info');
 
-  apiCall('https://api.replicate.com/v1/predictions', 'POST', {
-    version: 'a6b8e9b6c6f2a6f30e1e1a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6',
+  apiCall('https://api.replicate.com/v1/models/fofr/live-portrait/predictions', 'POST', {
     input: {
       source_image: imageBase64,
       driving_video: DRIVER_B64,

@@ -185,15 +185,11 @@ el('genBtn').onclick = function() {
 };
 
 function apiCall(url, method, body, cb) {
-  var opts = {
-    method: method,
-    headers: {
-      'Authorization': 'Token ' + API_KEY,
-      'Content-Type': 'application/json'
-    }
-  };
-  if (body) opts.body = JSON.stringify(body);
-  fetch(url, opts)
+  fetch('/.netlify/functions/proxy', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: url, method: method, payload: body })
+  })
     .then(function(r) { return r.json(); })
     .then(cb)
     .catch(function(e) { showStatus('Error: ' + e.message, 'error'); resetBtn(); });

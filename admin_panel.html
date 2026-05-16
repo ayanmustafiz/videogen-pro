@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VideoGen Pro Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d0d0f;--surface:#16161a;--surface2:#1e1e24;--border:rgba(255,255,255,0.08);--purple:#7c5cfc;--green:#22c98a;--red:#fc5c5c;--orange:#f59e0b;--text:#f0f0f5;--text2:#8888a0;--text3:#55556a}
+body{font-family:Sora,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem 1rem 3rem}
+.header{text-align:center;margin-bottom:2rem}
+.header h1{font-size:24px;font-weight:700;margin-bottom:4px}
+.header p{font-size:13px;color:var(--text2)}
+.login-box{max-width:360px;margin:5rem auto;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2rem;text-align:center}
+.login-box h2{font-size:18px;margin-bottom:1.5rem}
+.login-box input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:Sora,sans-serif;font-size:14px;outline:none;margin-bottom:12px;text-align:center;letter-spacing:2px}
+.login-btn{width:100%;padding:13px;background:var(--purple);border:none;border-radius:12px;color:white;font-family:Sora,sans-serif;font-size:15px;font-weight:600;cursor:pointer}
+.dash{max-width:760px;margin:0 auto;display:none}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;color:var(--purple)}
+.stat-label{font-size:12px;color:var(--text2);margin-top:4px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr 90px;gap:10px;align-items:end}
+.form-group label{font-size:12px;color:var(--text3);display:block;margin-bottom:5px}
+.form-group input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:Sora,sans-serif;font-size:13px;outline:none}
+.form-group input:focus{border-color:var(--purple)}
+.create-btn{padding:10px 16px;background:var(--purple);border:none;border-radius:10px;color:white;font-family:Sora,sans-serif;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
+.client-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.client-card.inactive{opacity:0.6}
+.client-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.client-name{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.client-phone{font-size:12px;color:var(--text2);margin-top:2px}
+.client-key{font-size:13px;color:var(--purple);font-family:monospace;background:rgba(124,92,252,0.1);padding:6px 12px;border-radius:6px;margin-bottom:10px;display:inline-block;cursor:pointer;border:1px solid rgba(124,92,252,0.2)}
+.badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500}
+.badge-green{background:rgba(34,201,138,0.15);color:var(--green)}
+.badge-red{background:rgba(252,92,92,0.15);color:var(--red)}
+.credit-bar-wrap{background:var(--bg);border-radius:99px;height:6px;margin-bottom:8px;overflow:hidden}
+.credit-bar{height:100%;background:linear-gradient(90deg,var(--purple),#9d82fd);border-radius:99px}
+.credit-info{display:flex;gap:16px;font-size:12px;color:var(--text2);margin-bottom:10px}
+.client-actions{display:flex;gap:6px;flex-wrap:wrap}
+.btn-sm{padding:5px 10px;border:none;border-radius:8px;font-family:Sora,sans-serif;font-size:12px;font-weight:500;cursor:pointer}
+.btn-purple{background:rgba(124,92,252,0.15);color:var(--purple)}
+.btn-green{background:rgba(34,201,138,0.15);color:var(--green)}
+.btn-red{background:rgba(252,92,92,0.15);color:var(--red)}
+.btn-orange{background:rgba(245,158,11,0.15);color:var(--orange)}
+.add-credits{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+.add-credits span{font-size:13px;color:var(--text2)}
+.btn-credit{padding:5px 12px;background:rgba(124,92,252,0.12);border:1px solid rgba(124,92,252,0.25);border-radius:8px;color:var(--purple);font-family:Sora,sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+.status-box{display:none;position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:12px;font-size:14px;z-index:999;max-width:340px}
+.st-success{background:#1a3a2a;color:var(--green);border:1px solid rgba(34,201,138,0.3)}
+.st-error{background:#3a1a1a;color:var(--red);border:1px solid rgba(252,92,92,0.3)}
+.st-info{background:#1a1a3a;color:#9d82fd;border:1px solid rgba(124,92,252,0.3)}
+.loading,.empty{text-align:center;padding:2rem;color:var(--text3);font-size:14px}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>&#127916; VideoGen Pro</h1>
+  <p>Admin Panel</p>
+</div>
+
+<div class="login-box" id="loginSection">
+  <h2>&#128274; Admin Login</h2>
+  <input type="password" id="adminPass" placeholder="Password dao">
+  <button class="login-btn" id="loginBtn">Login koro</button>
+</div>
+
+<div class="dash" id="dashSection">
+  <div class="stats">
+    <div class="stat-card"><div class="stat-num" id="statClients">0</div><div class="stat-label">Total Client</div></div>
+    <div class="stat-card"><div class="stat-num" id="statCredits">0</div><div class="stat-label">Total Credit</div></div>
+    <div class="stat-card"><div class="stat-num" id="statUsed">0</div><div class="stat-label">Video Made</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">New Client</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Name</label><input type="text" id="clientName" placeholder="Client name"></div>
+      <div class="form-group"><label>Phone</label><input type="text" id="clientPhone" placeholder="01XXXXXXXXX"></div>
+      <div class="form-group"><label>Credit</label><input type="number" id="clientCredits" placeholder="10" min="1"></div>
+    </div>
+    <button class="create-btn" id="createBtn">Create Client + Generate Key</button>
+  </div>
+  <div class="card">
+    <div class="card-title">All Clients</div>
+    <div id="clientList"><div class="loading">Loading...</div></div>
+  </div>
+</div>
+
+<div class="status-box" id="statusBox"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+var cfg = {
+  apiKey: 'AIzaSyCVeRS8g48h0x2P_77kHdgXDtZtFT7TAVs',
+  authDomain: 'videogen-pro.firebaseapp.com',
+  projectId: 'videogen-pro',
+  storageBucket: 'videogen-pro.firebasestorage.app',
+  messagingSenderId: '520348603401',
+  appId: '1:520348603401:web:8ddf3a3d2233c322abd4d8'
+};
+firebase.initializeApp(cfg);
+var db = firebase.firestore();
+var PASS = 'Ayanhere';
+
+function showMsg(msg, type) {
+  var b = document.getElementById('statusBox');
+  b.textContent = msg;
+  b.className = 'status-box st-' + type;
+  b.style.display = 'block';
+  setTimeout(function() { b.style.display = 'none'; }, 4000);
+}
+
+function genKey() {
+  var c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  var k = 'VGP';
+  for (var i = 0; i < 3; i++) {
+    k += '-';
+    for (var j = 0; j < 4; j++) k += c[Math.floor(Math.random() * c.length)];
+  }
+  return k;
+}
+
+document.getElementById('loginBtn').onclick = function() {
+  var p = document.getElementById('adminPass').value;
+  if (p === PASS) {
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('dashSection').style.display = 'block';
+    loadClients();
+  } else {
+    showMsg('Wrong password!', 'error');
+  }
+};
+
+document.getElementById('adminPass').onkeydown = function(e) {
+  if (e.key === 'Enter') document.getElementById('loginBtn').click();
+};
+
+document.getElementById('createBtn').onclick = function() {
+  var name = document.getElementById('clientName').value.trim();
+  var cr = parseInt(document.getElementById('clientCredits').value);
+  var ph = document.getElementById('clientPhone').value.trim();
+  if (!name) { showMsg('Name dao!', 'error'); return; }
+  if (!cr || cr < 1) { showMsg('Credit dao!', 'error'); return; }
+  var key = genKey();
+  db.collection('clients').doc(key).set({
+    name: name, phone: ph, credits: cr, usedCredits: 0,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    active: true, key: key
+  }).then(function() {
+    showMsg('Client created! Key: ' + key, 'success');
+    document.getElementById('clientName').value = '';
+    document.getElementById('clientCredits').value = '';
+    document.getElementById('clientPhone').value = '';
+    loadClients();
+  }).catch(function(e) { showMsg('Error: ' + e.message, 'error'); });
+};
+
+function addCredits(key, amt) {
+  db.collection('clients').doc(key).update({
+    credits: firebase.firestore.FieldValue.increment(amt)
+  }).then(function() { showMsg('+' + amt + ' credit added!', 'success'); loadClients(); })
+  .catch(function(e) { showMsg('Error: ' + e.message, 'error'); });
+}
+
+function toggleClient(key, cur) {
+  db.collection('clients').doc(key).update({ active: !cur })
+  .then(function() { showMsg(cur ? 'Client disabled' : 'Client enabled', 'info'); loadClients(); })
+  .catch(function(e) { showMsg('Error: ' + e.message, 'error'); });
+}
+
+function delClient(key) {
+  if (!confirm('Delete this client?')) return;
+  db.collection('clients').doc(key).delete()
+  .then(function() { showMsg('Client deleted', 'info'); loadClients(); })
+  .catch(function(e) { showMsg('Error: ' + e.message, 'error'); });
+}
+
+function copyKey(key) {
+  navigator.clipboard.writeText(key).then(function() { showMsg('Copied: ' + key, 'success'); });
+}
+
+function loadClients() {
+  var list = document.getElementById('clientList');
+  list.innerHTML = '<div class="loading">Loading...</div>';
+  db.collection('clients').get().then(function(snap) {
+    if (snap.empty) { list.innerHTML = '<div class="empty">No clients yet</div>'; return; }
+    var tc = 0, tk = 0, tu = 0;
+    var allClients = [];
+    snap.forEach(function(d) {
+      var c = d.data();
+      tc++; tk += c.credits || 0; tu += c.usedCredits || 0;
+      allClients.push(c);
+    });
+    document.getElementById('statClients').textContent = tc;
+    document.getElementById('statCredits').textContent = tk;
+    document.getElementById('statUsed').textContent = tu;
+    list.innerHTML = '';
+    allClients.forEach(function(c) {
+      var rem = (c.credits||0) - (c.usedCredits||0);
+      var pct = Math.min(((c.usedCredits||0)/(c.credits||1))*100,100);
+      var card = document.createElement('div');
+      card.className = 'client-card' + (c.active ? '' : ' inactive');
+      var topDiv = document.createElement('div');
+      topDiv.className = 'client-top';
+      var infoDiv = document.createElement('div');
+      var nameDiv = document.createElement('div');
+      nameDiv.className = 'client-name';
+      nameDiv.textContent = c.name + ' ';
+      var badge = document.createElement('span');
+      badge.className = 'badge ' + (c.active ? 'badge-green' : 'badge-red');
+      badge.textContent = c.active ? 'Active' : 'Inactive';
+      nameDiv.appendChild(badge);
+      var phoneDiv = document.createElement('div');
+      phoneDiv.className = 'client-phone';
+      phoneDiv.textContent = c.phone || 'No phone';
+      infoDiv.appendChild(nameDiv);
+      infoDiv.appendChild(phoneDiv);
+      var actDiv = document.createElement('div');
+      actDiv.className = 'client-actions';
+      var copyBtn = document.createElement('button');
+      copyBtn.className = 'btn-sm btn-purple';
+      copyBtn.textContent = 'Copy Key';
+      copyBtn.onclick = (function(k){ return function(){ copyKey(k); }; })(c.key);
+      var togBtn = document.createElement('button');
+      togBtn.className = 'btn-sm ' + (c.active ? 'btn-orange' : 'btn-green');
+      togBtn.textContent = c.active ? 'Disable' : 'Enable';
+      togBtn.onclick = (function(k,a){ return function(){ toggleClient(k,a); }; })(c.key, c.active);
+      var delBtn = document.createElement('button');
+      delBtn.className = 'btn-sm btn-red';
+      delBtn.textContent = 'Delete';
+      delBtn.onclick = (function(k){ return function(){ delClient(k); }; })(c.key);
+      actDiv.appendChild(copyBtn);
+      actDiv.appendChild(togBtn);
+      actDiv.appendChild(delBtn);
+      topDiv.appendChild(infoDiv);
+      topDiv.appendChild(actDiv);
+      var keyDiv = document.createElement('div');
+      keyDiv.className = 'client-key';
+      keyDiv.textContent = c.key + ' (click to copy)';
+      keyDiv.onclick = (function(k){ return function(){ copyKey(k); }; })(c.key);
+      var barWrap = document.createElement('div');
+      barWrap.className = 'credit-bar-wrap';
+      var bar = document.createElement('div');
+      bar.className = 'credit-bar';
+      bar.style.width = pct + '%';
+      barWrap.appendChild(bar);
+      var infoEl = document.createElement('div');
+      infoEl.className = 'credit-info';
+      infoEl.innerHTML = '<span>Used: <b>' + (c.usedCredits||0) + '</b></span><span>Left: <b>' + rem + '</b></span><span>Total: <b>' + (c.credits||0) + '</b></span>';
+      var addDiv = document.createElement('div');
+      addDiv.className = 'add-credits';
+      var addLabel = document.createElement('span');
+      addLabel.textContent = 'Add credit:';
+      addDiv.appendChild(addLabel);
+      [5,10,20,50].forEach(function(amt) {
+        var b = document.createElement('button');
+        b.className = 'btn-credit';
+        b.textContent = '+' + amt;
+        b.onclick = (function(k,a){ return function(){ addCredits(k,a); }; })(c.key, amt);
+        addDiv.appendChild(b);
+      });
+      card.appendChild(topDiv);
+      card.appendChild(keyDiv);
+      card.appendChild(barWrap);
+      card.appendChild(infoEl);
+      card.appendChild(addDiv);
+      list.appendChild(card);
+    });
+  }).catch(function(e) { list.innerHTML = '<div class="empty">Error: ' + e.message + '</div>'; });
+}
+</script>
+</body>
+</html>
